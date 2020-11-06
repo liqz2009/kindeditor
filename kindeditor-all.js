@@ -4503,11 +4503,15 @@ function _loadStyle(url) {
 	link.href = url;
 	link.rel = 'stylesheet';
 }
-function _ajax(url, fn, method, param, dataType) {
+function _ajax(url,fn,header, method, param, dataType) {
 	method = method || 'GET';
 	dataType = dataType || 'json';
 	var xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
 	xhr.open(method, url, true);
+	for(var key in header)
+	{
+	    xhr.setRequestHeader(key,header[key]);
+	 }
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState == 4 && xhr.status == 200) {
 			if (fn) {
@@ -6861,10 +6865,10 @@ KindEditor.plugin('filemanager', function(K) {
 		function reloadPage(path, order, func) {
 			var param = 'path=' + path + '&order=' + order + '&dir=' + dirName;
 			dialog.showLoading(self.lang('ajaxLoading'));
-			K.ajax(K.addParam(fileManagerJson, param + '&' + new Date().getTime()), function(data) {
+			K.ajax(K.addParam(fileManagerJson,param + '&' + new Date().getTime()), function(data) {
 				dialog.hideLoading();
 				func(data);
-			});
+			},self.header);
 		}
 		var elList = [];
 		function bindEvent(el, result, data, createFunc) {
